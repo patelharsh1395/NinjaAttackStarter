@@ -307,7 +307,7 @@ extension GameScene: SKPhysicsContactDelegate {
       view?.presentScene(gameOverScene, transition: reveal)
     }
   }
-  
+  //**
   func didBegin(_ contact: SKPhysicsContact) {
     // 1
     var firstBody: SKPhysicsBody
