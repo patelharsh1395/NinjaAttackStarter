@@ -6,7 +6,7 @@ import SpriteKit
 
 
 class GameOverScene: SKScene {
-  init(size: CGSize, won: Int) {
+  init(size: CGSize, won: [Int]) {
     super.init(size: size)
     
     // 1
@@ -14,14 +14,22 @@ class GameOverScene: SKScene {
     
     // 2
   //  let message = won ? "You Won!" : "You Lose :["
-    let message = "you scored \(won)";
+    var message = "player one scored \(won[0]) \n";
+    var message2 = "player two scored \(won[1]) \n";
+   
     // 3
     let label = SKLabelNode(fontNamed: "SavoyeLetPlain")
     label.text = message
     label.fontSize = 40
     label.fontColor = SKColor.black
     label.position = CGPoint(x: size.width/2, y: size.height/2)
-    addChild(label)
+     addChild(label)
+    let label2 = SKLabelNode(fontNamed: "SavoyeLetPlain")
+    label2.text = message2
+    label2.fontSize = 40
+    label2.fontColor = SKColor.black
+    label2.position = CGPoint(x: (size.width/2), y: (size.height/2)-30)
+    addChild(label2)
     
     // 4
     run(SKAction.sequence([

@@ -77,6 +77,7 @@ class GameScene: SKScene {
   
       var monstersDestroyed = 0
   var score = 0;
+  var score2 = 0;
   
       override func didMove(to view: SKView) {
         // 2
@@ -118,7 +119,11 @@ class GameScene: SKScene {
 
       func addMonster() {
         
-        
+        if totalTime < 30 {
+          let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+          let gameOverScene = GameOverScene(size: self.size,won: [score,score2]);
+          view?.presentScene(gameOverScene, transition: reveal)
+        }
         if(counter == 0)
         {
           counter+=1;
@@ -240,14 +245,19 @@ class GameScene: SKScene {
        let touchLocation = touch.location(in: self)
        
       
-      
-      
+      let attribute = SKAttribute(name: "pj",
+                                  type: SKAttributeType.float);
+     
+    //  projectile2.setValue(SKAttributeValue(float: 10.0), forAttribute: "pj");
        // 2 - Set up initial location of projectile
        let projectile = SKSpriteNode(imageNamed: "bomb")
+      // projectile.setValue(SKAttributeValue(float: 20.0), forAttribute: "pj");
       if touchLocation.x < self.frame.size.width / 2 {
            projectile.position = player.position
+          projectile.setValue(SKAttributeValue(float: 10.0), forAttribute: "pj");
       } else {
           projectile.position = player2.position
+        projectile.setValue(SKAttributeValue(float: 20.0), forAttribute: "pj");
       }
       
       
@@ -259,7 +269,7 @@ class GameScene: SKScene {
      // var offset : CGPoint;
      
       let offset = touchLocation - projectile.position
-       
+     
        // 4 - Bail out if you are shooting down or backwards
        //if offset.x < 0 { return }
        
@@ -268,17 +278,20 @@ class GameScene: SKScene {
        
        // 6 - Get the direction of where to shoot
        let direction = offset.normalized()
-       
+      
        // 7 - Make it shoot far enough to be guaranteed off screen
        let shootAmount = direction * 1000
-       
+      
        // 8 - Add the shoot amount to the current position
        let realDest = shootAmount + projectile.position
-       
+      
+      
        // 9 - Create the actions
        let actionMove = SKAction.move(to: realDest, duration: 2.0)
        let actionMoveDone = SKAction.removeFromParent()
        projectile.run(SKAction.sequence([actionMove, actionMoveDone]))
+      
+      
       
       projectile.physicsBody = SKPhysicsBody(circleOfRadius: projectile.size.width/2)
       projectile.physicsBody?.isDynamic = true
@@ -299,11 +312,25 @@ extension GameScene: SKPhysicsContactDelegate {
     run(SKAction.playSoundFileNamed("Glass_Break.mp3", waitForCompletion: false))
     projectile.removeFromParent()
     monster.removeFromParent()
-    score += 1;
+    
+    let dict = projectile.attributeValues;
+    let val_sk = dict["pj"];
+    
+    switch val_sk?.floatValue {
+    case 10.0 :
+      score += 1;
+    case 20.0 :
+      score2 += 1;
+    default:
+      break
+    }
+    
+    
+   
     monstersDestroyed += 1
     if totalTime < 30 {
       let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-      let gameOverScene = GameOverScene(size: self.size, won: score);
+      let gameOverScene = GameOverScene(size: self.size, won: [score,score2]);
       view?.presentScene(gameOverScene, transition: reveal)
     }
   }
